@@ -20,6 +20,18 @@ import AddTodo from './components/AddTodo';
 import TodoView from './components/TodoView';
 import Footer from './components/Footer';
 
+import Card from 'antd/lib/card';
+import 'antd/lib/card/style';
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style'
+
+const openNotification = (type) => {
+    Notification[type]({
+        message: 'A Sample Todos use React & MobX',
+        description: 'This is the Sample Demo of the React,MobX,Ant-Design,LocalStorage etc.And so,you can Add Todo and double-click a todo item to edit. Thanks',
+    });
+};
+
 
 @observer
 class TodoList extends React.Component {
@@ -27,22 +39,25 @@ class TodoList extends React.Component {
     render() {
         const store = this.props.store;
         return (
-            <div style={{width: '400px', margin: '0 auto', border: '1px solid #ccc', textAlign: 'center'}}>
-                <h2>Todos-MobX</h2>
-                <AddTodo addTodo={this.props.store.addTodo}/>
-                <ul>
-                    {store.todos.map(
-                        (todo, index) => <TodoView todo={todo} key={index} index={index}
-                                                   writeLocal={this.props.store.writeLocal}
-                                                   deleteTodo={this.props.store.deleteTodo}
+            <div style={{width: '400px', margin: '0 auto', textAlign: 'center'}}>
+                <Card title="Todos-MobX" bordered={false} style={{ width: 400 }} extra={<  a onClick={()=>openNotification('info')}>More</a>}>
+                    <AddTodo addTodo={this.props.store.addTodo}/>
 
-                        />
-                    )}
-                </ul>
+                    <ul style={{margin: "10px 20px"}}>
+                        {store.todos.map(
+                            (todo, index) => <TodoView todo={todo} key={index} index={index}
+                                                       writeLocal={this.props.store.writeLocal}
+                                                       deleteTodo={this.props.store.deleteTodo}
+                                                       isAllcheckedOrNot={this.props.store.isAllcheckedOrNot}
 
-                <Footer store={store}/>
+                            />
+                        )}
+                    </ul>
+                    <Footer store={store}/>
 
-                <DevTools/>
+                    <DevTools/>
+                </Card>
+
             </div>
         )
     }

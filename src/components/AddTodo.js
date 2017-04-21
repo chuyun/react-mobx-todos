@@ -16,8 +16,11 @@ import React from 'react'
 useStrict(true);
 
 import Input from 'antd/lib/input';
-import 'antd/lib/input/style/css';
+import 'antd/lib/input/style';
+import Message from 'antd/lib/message';
+import 'antd/lib/message/style'
 
+const Search=Input.Search;
 
 @observer
 class AddTodo extends React.Component {
@@ -28,7 +31,7 @@ class AddTodo extends React.Component {
                 <Input type="text"
                        placeholder='Input someThing'
                        onKeyUp={this.addTodoHanderKeyUp.bind(this)}
-                       style={{width:'100%'}}
+                       style={{width:'90%'}}
                 />
             </div>
         )
@@ -36,6 +39,7 @@ class AddTodo extends React.Component {
     @action addTodoHanderKeyUp = (event) => {
         if (event.keyCode === 13 && event.target.value !== "") {
             this.props.addTodo(event.target.value);
+            Message.success('添加成功');
             event.target.value = ""
         }
     };

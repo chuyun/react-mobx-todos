@@ -16,26 +16,59 @@ import React from 'react'
 import DevTools from 'mobx-react-devtools'
 useStrict(true);
 
-@observer
-class Footer extends React.Component{
+import CheckBox from 'antd/lib/checkbox';
+import 'antd/lib/checkbox/style';
+import Button from 'antd/lib/button';
+import 'antd/lib/button/style';
+import Popconfirm from 'antd/lib/popconfirm';
+import 'antd/lib/popconfirm/style'
+import Message from 'antd/lib/message';
+import 'antd/lib/message/style'
 
-    render(){
-        const store=this.props.store;
-        return(
-            <div>
-                <small> (double-click a todo to edit)</small>
-                <br/>
+@observer
+class Footer extends React.Component {
+
+    render() {
+        const store = this.props.store;
+        return (
+            <div className="footer">
                 {store.report}
                 <br/>
-                <input type="checkbox"
-                       checked={this.props.store.isAllChecked}
-                       onChange={this.props.store.handerAllState}
+                <br/>
+                <CheckBox
+                    style={{marginTop:'1px'}}
+                    checked={this.props.store.isAllChecked}
+                    onChange={this.props.store.handerAllState}
+                >
+                    {store.isAllChecked?'全不选':"全选"}
+                </CheckBox>
+                <Popconfirm title="Are you sure you want to delete all selected items?" onConfirm={this.confirm} onCancel={this.cancel} okText="Yes" cancelText="No">
+                <Button
+                    className='deleteAll'
+                    size='small'
+                    type="danger"
+                    // onClick={this.props.store.deleteCompleted}
+                >
+                    删除已完成
+                </Button>
+                </Popconfirm>
 
-                />
-                <button onClick={this.props.store.deleteCompleted}>删除已完成</button>
             </div>
         )
     }
+
+
+    confirm = (e) => {
+        // console.log(e);
+        this.props.store.deleteCompleted();
+        Message.success('已删除');
+    };
+
+    cancel = (e) => {
+        // console.log(e);
+        Message.error('已取消');
+    };
+
 }
 
 export default Footer;

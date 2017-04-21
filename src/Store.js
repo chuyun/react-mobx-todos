@@ -21,7 +21,9 @@ export default class ObservableTodoStore {
     //     completed: false,
     //     isEditing: false
     // }];
-    @observable todos = this.db.get('todos-mobx') || [{task: "吃午饭", completed: true, isEditing: false}]
+    // @observable todos = this.db.get('todos-mobx') || [{task: "吃午饭", completed: true, isEditing: false}]
+    @observable todos = this.db.get('todos-mobx') || [];
+
     @observable isAllChecked = false;
     @observable pendingRequest = 0;
 
@@ -32,31 +34,28 @@ export default class ObservableTodoStore {
         this.addTodo = this.addTodo.bind(this);
         this.deleteCompleted = this.deleteCompleted.bind(this);
         this.handerAllState = this.handerAllState.bind(this);
-        this.writeLocal=this.writeLocal.bind(this);
-    }
-    @action writeLocal=()=>{
-        this.db.set('todos-mobx', this.todos);
-        console.log("SSSS");
+        this.writeLocal = this.writeLocal.bind(this);
+        this.isAllcheckedOrNot = this.isAllcheckedOrNot.bind(this);
     }
 
+    @action writeLocal = () => {
+        this.db.set('todos-mobx', this.todos);
+    };
 
     @computed get completedTodosCount() {
         return this.todos.filter(
             todo => todo.completed
         ).length
     }
-
     @computed get report() {
         if (this.todos.length === 0) {
-            return '<none>'
+            return 'Todo 列表中空空如也，快来添加吧！'
         } else {
             return `Progress: ${this.completedTodosCount}/${this.todos.length}`;
         }
     }
-
     @action changeTodoState(index, task) {
         this.todos[index].task = task;
-
     }
 
     @action addTodo(task) {
@@ -65,7 +64,7 @@ export default class ObservableTodoStore {
             task: task,
             completed: false,
             isEditing: false
-        })
+        });
         this.isAllChecked = false;
 
         this.writeLocal();
@@ -75,17 +74,13 @@ export default class ObservableTodoStore {
     @action deleteTodo(index) {
         console.log(index);
         this.todos.length && this.todos.splice(index, 1);
+        this.isAllcheckedOrNot();
 
         this.writeLocal();
     }
 
     //删除已完成
     @action deleteCompleted() {
-        // this.todos.map((todo,index)=>{
-        //     if(todo.completed){
-        //         this.todos.length && this.todos.splice(index, 1);
-        //     }
-        // })
 
         let newTodos = this.todos.filter(todo => !todo.completed);
         this.todos = newTodos;
@@ -113,5 +108,25 @@ export default class ObservableTodoStore {
             this.isAllChecked = true;
         }
         this.writeLocal();
+    }
+
+    @action isAllcheckedOrNot() {
+        // this.todos.every(todo => {
+        //     if (todo.completed) {
+        //         this.isAllChecked = true
+        //         console.log('True')
+        //     } else {
+        //         this.isAllChecked = false
+        //         console.log('false')
+        //     }
+        // })
+        if (this.todos.filter(todo => todo.completed).length === this.todos.length) {
+            this.isAllChecked = true
+        } else {
+            this.isAllChecked=false
+
+        }
+
+
     }
 }

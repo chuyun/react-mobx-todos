@@ -1,0 +1,61 @@
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  text-align: left;
+  line-height: 32px;
+  //border: 1px solid #ccc;
+
+  .input {
+    height: 28px;
+    line-height: 32px;
+    //margin: auto 0;
+  }
+
+  .delete-btn {
+    margin: auto 0;
+    background-color: transparent;
+    border-color: transparent;
+    color: #ccc;
+    font-size: 18px;
+
+    transition: All 0.4s ease-in-out;
+
+    -webkit-transition: All 0.4s ease-in-out;
+
+    -moz-transition: All 0.4s ease-in-out;
+
+    -o-transition: All 0.4s ease-in-out;
+
+    &:hover {
+      background-color: transparent;
+      border-color: transparent;
+      color: red;
+
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+
+      -o-transform: rotate(360deg);
+
+      -ms-transform: rotate(360deg);
+
+    }
+
+  }
+
+}
+
+.deleteAll{
+  float: right;
+}
+
+.footer {
+  text-align: left;
+  margin: 10px 20px;
+}
+
+.ant-card{
+  border: 1px solid #f2f2f2;
+}

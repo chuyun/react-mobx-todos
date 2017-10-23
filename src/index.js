@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 import ObservableTodoStore from './Store'
 import TodoList from './TodoList';
-import './index.less'
+import './index.css'
 
 const observableTodoStore = new ObservableTodoStore();
 

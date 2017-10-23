@@ -10,6 +10,6 @@ gen
 
 
 !/node_modules/localDb/
-#/node_modules/
+/node_modules/
 !/node_modules/antd/
 !/node_modules/localdb/

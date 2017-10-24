@@ -13,11 +13,6 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
-const extractLess = new ExtractTextPlugin({
-    filename: "[name].[contenthash].css",
-    disable: process.env.NODE_ENV === "development"
-});
-
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
 const publicPath = paths.servedPath;
@@ -48,7 +43,7 @@ const cssFilename = 'static/css/[name].[contenthash:8].css';
 // To have this structure working with relative paths, we have to use custom options.
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
     ? // Making sure that the publicPath goes back to to build folder.
-    {publicPath: Array(cssFilename.split('/').length).join('../')}
+    { publicPath: Array(cssFilename.split('/').length).join('../') }
     : {};
 
 // This is the production configuration.
@@ -214,34 +209,54 @@ module.exports = {
                     },
                     {
                         test: /\.less$/,
-                        use: extractLess.extract({
-                            use: [{
-                                loader: "style-loader"
-                            }, {
-                                loader: "less-loader"
-                            }],
-                            // use style-loader in development
-                            fallback: "css-loader"
-                        })
-                    }]
+                        use: [
+                            require.resolve('style-loader'),
+                            require.resolve('css-loader'),
+                            {
+                                loader: require.resolve('postcss-loader'),
+                                options: {
+                                    ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+                                    plugins: () => [
+                                        require('postcss-flexbugs-fixes'),
+                                        autoprefixer({
+                                            browsers: [
+                                                '>1%',
+                                                'last 4 versions',
+                                                'Firefox ESR',
+                                                'not ie < 9', // React doesn't support IE8 anyway
+                                            ],
+                                            flexbox: 'no-2009',
+                                        }),
+                                    ],
+                                },
+                            },
+                            {
+                                loader: require.resolve('less-loader'),
+                                options: {
+                                    //modifyVars: { "@primary-color": "#1DA57A" },
+                                },
+                            },
+                        ],
+                    },
+                    // "file" loader makes sure assets end up in the `build` folder.
+                    // When you `import` an asset, you get its filename.
+                    // This loader doesn't use a "test" so it will catch all modules
+                    // that fall through the other loaders.
+                    {
+                        loader: require.resolve('file-loader'),
+                        // Exclude `js` files to keep "css" loader working as it injects
+                        // it's runtime that would otherwise processed through "file" loader.
+                        // Also exclude `html` and `json` extensions so they get processed
+                        // by webpacks internal loaders.
+                        exclude: [/\.js$/, /\.html$/, /\.json$/],
+                        options: {
+                            name: 'static/media/[name].[hash:8].[ext]',
+                        },
+                    },
+                    // ** STOP ** Are you adding a new loader?
+                    // Make sure to add the new loader(s) before the "file" loader.
+                ],
             },
-            // "file" loader makes sure assets end up in the `build` folder.
-            // When you `import` an asset, you get its filename.
-            // This loader doesn't use a "test" so it will catch all modules
-            // that fall through the other loaders.
-            {
-                loader: require.resolve('file-loader'),
-                // Exclude `js` files to keep "css" loader working as it injects
-                // it's runtime that would otherwise processed through "file" loader.
-                // Also exclude `html` and `json` extensions so they get processed
-                // by webpacks internal loaders.
-                exclude: [/\.js$/, /\.html$/, /\.json$/],
-                options: {
-                    name: 'static/media/[name].[hash:8].[ext]',
-                },
-            },
-            // ** STOP ** Are you adding a new loader?
-            // Make sure to add the new loader(s) before the "file" loader.
         ],
     },
     plugins: [

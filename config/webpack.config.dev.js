@@ -159,7 +159,7 @@ module.exports = {
                     // In production, we use a plugin to extract that CSS to a file, but
                     // in development "style" loader enables hot editing of CSS.
                     {
-                        test: /\.css$/,
+                        test: /\.(css)$/,
                         use: [
                             require.resolve('style-loader'),
                             {
@@ -192,16 +192,34 @@ module.exports = {
                     },
                     {
                         test: /\.less$/,
-                        use: [{
-                            loader: "style-loader"
-                        }, {
-                            loader: "css-loader"
-                        }, {
-                            loader: "less-loader", options: {
-                                strictMath: true,
-                                noIeCompat: true
-                            }
-                        }]
+                        use: [
+                            require.resolve('style-loader'),
+                            require.resolve('css-loader'),
+                            {
+                                loader: require.resolve('postcss-loader'),
+                                options: {
+                                    ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+                                    plugins: () => [
+                                        require('postcss-flexbugs-fixes'),
+                                        autoprefixer({
+                                            browsers: [
+                                                '>1%',
+                                                'last 4 versions',
+                                                'Firefox ESR',
+                                                'not ie < 9', // React doesn't support IE8 anyway
+                                            ],
+                                            flexbox: 'no-2009',
+                                        }),
+                                    ],
+                                },
+                            },
+                            {
+                                loader: require.resolve('less-loader'),
+                                options: {
+                                    //modifyVars: { "@primary-color": "#1DA57A" },
+                                },
+                            },
+                        ],
                     },
                     // "file" loader makes sure those assets get served by WebpackDevServer.
                     // When you `import` an asset, you get its (virtual) filename.

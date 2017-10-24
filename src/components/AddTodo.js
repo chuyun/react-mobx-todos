@@ -4,8 +4,8 @@
 
 /**
  * @author  info_together@aliyun.com
- * @description
- * @param
+ * @description 添加组件
+ * @param [...]
  * @return
  */
 
@@ -29,7 +29,6 @@ class AddTodo extends React.Component {
             </div>
         )
     }
-
     /**
      * 按下return键时添加数据到Store中
      * @param event

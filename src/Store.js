@@ -5,13 +5,14 @@
 /**
  * @author  info_together@aliyun.com
  * @description
- * @param
- * @return
+ * @param [...]
+ * @return [...]
  */
 
 
 import {observable, action, computed, useStrict, autorun} from 'mobx'
-import LocalDb from 'localdb';
+import LocalDb from './localDb/';
+
 useStrict(true);
 
 
@@ -23,10 +24,13 @@ export default class ObservableTodoStore {
     // }];
     // @observable todos = this.db.get('todos-mobx') || [{task: "吃午饭", completed: true, isEditing: false}]
     @observable todos = this.db.get('todos-mobx') || [];
-
     @observable isAllChecked = false;
     @observable pendingRequest = 0;
 
+    /**
+     * 构造函数
+     * 初始化
+     */
     constructor() {
         this.db = new LocalDb('React-MobX');
         autorun(() => console.log(this.report));
@@ -38,27 +42,53 @@ export default class ObservableTodoStore {
         this.isAllcheckedOrNot = this.isAllcheckedOrNot.bind(this);
     }
 
+    /**
+     * 写入数据到localStorage
+     */
     @action writeLocal = () => {
         this.db.set('todos-mobx', this.todos);
     };
 
-    @computed get completedTodosCount() {
+    /**
+     * 计算属性 已完成项目计数
+     * @return {Number}
+     */
+    @computed
+    get completedTodosCount() {
         return this.todos.filter(
             todo => todo.completed
         ).length
     }
-    @computed get report() {
+
+    /**
+     * 计算属性 完成百分比
+     * @return {*}
+     */
+    @computed
+    get report() {
         if (this.todos.length === 0) {
             return 'Todo 列表中空空如也，快来添加吧！'
         } else {
             return `Progress: ${this.completedTodosCount}/${this.todos.length}`;
         }
     }
-    @action changeTodoState(index, task) {
+
+    /**
+     * 修改待办事项
+     * @param index
+     * @param task
+     */
+    @action
+    changeTodoState(index, task) {
         this.todos[index].task = task;
     }
 
-    @action addTodo(task) {
+    /**
+     * 添加新的待办事项
+     * @param task
+     */
+    @action
+    addTodo(task) {
         console.log(this);
         this.todos.push({
             task: task,
@@ -66,62 +96,58 @@ export default class ObservableTodoStore {
             isEditing: false
         });
         this.isAllChecked = false;
-
         this.writeLocal();
     }
 
-    //删除项目
-    @action deleteTodo(index) {
+    /**
+     * 删除待办事项
+     * @param index
+     */
+    @action
+    deleteTodo(index) {
         console.log(index);
         this.todos.length && this.todos.splice(index, 1);
         this.isAllcheckedOrNot();
-
         this.writeLocal();
     }
 
-    //删除已完成
-    @action deleteCompleted() {
-
+    /**
+     * 删除已完成项目
+     */
+    @action
+    deleteCompleted() {
         let newTodos = this.todos.filter(todo => !todo.completed);
         this.todos = newTodos;
-
         if (this.isAllChecked) this.isAllChecked = false;
-
         this.writeLocal();
-
     }
 
-    // 处理全选与全不选的状态
-    @action handerAllState() {
+    /**
+     * 处理全选与全不选的状态
+     */
+    @action
+    handerAllState() {
         if (this.isAllChecked) {
             //    当前状态为全选，=> 全不选
             this.todos.map(todo => todo.completed = false);
             this.isAllChecked = false;
         } else {
             //    当前状态为未选择 =>全选
-            this.todos.map((todo) =>  todo.completed = true);
+            this.todos.map((todo) => todo.completed = true);
             this.isAllChecked = true;
         }
         this.writeLocal();
     }
 
-    @action isAllcheckedOrNot() {
-        // this.todos.every(todo => {
-        //     if (todo.completed) {
-        //         this.isAllChecked = true
-        //         console.log('True')
-        //     } else {
-        //         this.isAllChecked = false
-        //         console.log('false')
-        //     }
-        // })
+    /**
+     * 判断是否全选
+     */
+    @action
+    isAllcheckedOrNot() {
         if (this.todos.filter(todo => todo.completed).length === this.todos.length) {
             this.isAllChecked = true
         } else {
-            this.isAllChecked=false
-
+            this.isAllChecked = false
         }
-
-
     }
 }

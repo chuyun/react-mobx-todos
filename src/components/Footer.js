@@ -4,7 +4,7 @@
 
 /**
  * @author  info_together@aliyun.com
- * @description
+ * @description Footer组件
  * @param
  * @return
  */
@@ -43,22 +43,21 @@ class Footer extends React.Component {
                         删除已完成
                     </Button>
                 </Popconfirm>
-
             </div>
         )
     }
 
-    confirm = (e) => {
-        // console.log(e);
+    /**
+     * antd Popconfirm confirm cancel 事件
+     */
+    confirm = () => {
         this.props.store.deleteCompleted();
         Message.success('已删除');
     };
 
-    cancel = (e) => {
-        // console.log(e);
+    cancel = () => {
         Message.error('已取消');
     };
-
 }
 
 export default Footer;

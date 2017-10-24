@@ -1,6 +1,3 @@
-
-
-
 /**
  * Created by jun on 2017/4/19.
  */
@@ -15,7 +12,6 @@
 import {observable, action, computed, useStrict, autorun, remove} from 'mobx'
 import {observer} from 'mobx-react'
 import React from 'react'
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom'
 import DevTools from 'mobx-react-devtools'
 
@@ -38,13 +34,15 @@ class ObservableTodoStore {
         this.addTodo = this.addTodo.bind(this);
     }
 
-    @computed get completedTodosCount() {
+    @computed
+    get completedTodosCount() {
         return this.todos.filter(
             todo => todo.completed
         ).length
     }
 
-    @computed get report() {
+    @computed
+    get report() {
         if (this.todos.length === 0) {
             return '<none>'
         } else {
@@ -53,11 +51,13 @@ class ObservableTodoStore {
         }
     }
 
-    @action changeTodoState(index, task) {
+    @action
+    changeTodoState(index, task) {
         this.todos[index].task = task;
     }
 
-    @action addTodo(task) {
+    @action
+    addTodo(task) {
         console.log(this);
         this.todos.push({
             task: task,
@@ -66,7 +66,8 @@ class ObservableTodoStore {
         })
     }
 
-    @action deleteTodo(index) {
+    @action
+    deleteTodo(index) {
         console.log(index);
         this.todos.length && this.todos.splice(index, 1);
     }
@@ -81,14 +82,12 @@ class AddTodo extends React.Component {
         return (
             <div>
                 <input type="text" defaultValue='Input someThing' onKeyUp={this.addTodoHanderKeyUp.bind(this)}/>
-
             </div>
         )
     }
 
     @action addTodoHanderKeyUp = (event) => {
-
-        if (event.keyCode === 13&&event.target.value!=="") {
+        if (event.keyCode === 13 && event.target.value !== "") {
             this.props.addTodo(event.target.value);
             event.target.value = ""
         }
@@ -108,18 +107,16 @@ class TodoList extends React.Component {
                     {store.todos.map(
                         (todo, index) => <TodoView todo={todo} key={index} index={index}
                                                    deleteTodo={this.props.store.deleteTodo}
-
                         />
                     )}
                 </ul>
-                {store.pendingRequest > 0 ? <marquee>Loading...</marquee> : null }
+                {store.pendingRequest > 0 ? <marquee>Loading...</marquee> : null}
                 {/*<button onClick={ this.onNewTodo }>New Todo</button>*/}
                 <small> (double-click a todo to edit)</small>
                 <DevTools/>
             </div>
         )
     }
-
     @action onNewTodo = () => {
         this.props.store.addTodo(prompt('Enter a new todo:', 'coffee plz'));
     }
@@ -155,7 +152,6 @@ class TodoView extends React.Component {
                     删除
                 </button>
             </li>
-
         )
     }
 

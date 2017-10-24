@@ -14,7 +14,6 @@
 import {observable, action, computed, useStrict, autorun} from 'mobx'
 import {observer} from 'mobx-react'
 import React from 'react'
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom'
 import DevTools from 'mobx-react-devtools'
 
@@ -126,7 +125,6 @@ class Item extends React.Component {
     }
 
 }
-
 
 const store = new Store();
 

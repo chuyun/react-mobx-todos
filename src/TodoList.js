@@ -9,17 +9,13 @@
  * @return
  */
 
-
 import {action, useStrict} from 'mobx'
 import {observer} from 'mobx-react'
 import React from 'react'
 import DevTools from 'mobx-react-devtools'
-
-
 import AddTodo from './components/AddTodo';
 import TodoView from './components/TodoView';
 import Footer from './components/Footer';
-
 import {Card, Notification} from 'antd';
 
 useStrict(true);
@@ -31,7 +27,6 @@ const openNotification = (type) => {
     });
 };
 
-
 @observer
 class TodoList extends React.Component {
 
@@ -42,30 +37,21 @@ class TodoList extends React.Component {
                 <Card title="Todos-MobX" bordered={false} style={{width: 400}}
                       extra={<  a onClick={() => openNotification('info')}>More</a>}>
                     <AddTodo addTodo={this.props.store.addTodo}/>
-
                     <ul style={{margin: "10px 20px"}}>
                         {store.todos.map(
                             (todo, index) => <TodoView todo={todo} key={index} index={index}
                                                        writeLocal={this.props.store.writeLocal}
                                                        deleteTodo={this.props.store.deleteTodo}
                                                        isAllcheckedOrNot={this.props.store.isAllcheckedOrNot}
-
                             />
                         )}
                     </ul>
                     <Footer store={store}/>
-
                     <DevTools/>
                 </Card>
-
             </div>
         )
     }
-
-    @action onNewTodo = () => {
-        this.props.store.addTodo(prompt('Enter a new todo:', 'coffee plz'));
-    }
-
 }
 
 export default TodoList

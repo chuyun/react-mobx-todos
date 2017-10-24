@@ -4,11 +4,10 @@
 
 /**
  * @author  info_together@aliyun.com
- * @description
+ * @description 待办列表
  * @param
  * @return
  */
-
 
 import {action, useStrict} from 'mobx'
 import {observer} from 'mobx-react'
@@ -24,14 +23,6 @@ class TodoView extends React.Component {
         this.state = {
             deleteBtnShow: false
         }
-    }
-
-    handerMouseOver() {
-        this.setState({deleteBtnShow: true});
-    }
-
-    handerMouseOut() {
-        this.setState({deleteBtnShow: false});
     }
 
     render() {
@@ -75,28 +66,32 @@ class TodoView extends React.Component {
                     <a
                         className="delete-btn"
                         style={deleteStyle}
-                        // onClick={() => this.props.deleteTodo(index)}
                     >
                         ×
                     </a>
                 </Popconfirm>
             </li>
-
         )
     }
 
-    confirm = (idx) => {
-        // console.log(e);
-        this.props.deleteTodo(idx);
-        Message.success('已删除');
+    /**
+     * MouseOver 时显示deleteButton
+     */
+    handerMouseOver() {
+        this.setState({deleteBtnShow: true});
     };
 
-    cancel = (e) => {
-        // console.log(e);
-        Message.error('已取消');
+    /**
+     * MouseOut 时隐藏deleteButton
+     */
+    handerMouseOut() {
+        this.setState({deleteBtnShow: false});
     };
 
-    // 绑定键盘回车事件，添加新任务
+    /**
+     * 绑定键盘回车事件，添加新任务
+     * @param event
+     */
     @action handerKeyUp = (event) => {
         const todo = this.props.todo;
         if (event.keyCode === 13) {
@@ -104,16 +99,22 @@ class TodoView extends React.Component {
             todo.isEditing = false;
         }
         this.props.writeLocal();
-
     };
+
+    /**
+     * input 失去焦点，保存修改后的数据
+     * @param event
+     */
     @action inputBlur = (event) => {
         const todo = this.props.todo;
         todo.task = event.target.value;
         todo.isEditing = false;
         this.props.writeLocal();
-
     };
 
+    /**
+     * CheckBox点击事件
+     */
     @action onToggleCompleted = () => {
         const todo = this.props.todo;
         todo.completed = !todo.completed;
@@ -121,12 +122,27 @@ class TodoView extends React.Component {
         this.props.writeLocal();
 
     };
+
+    /**
+     * 设置组件处于编辑状态
+     */
     @action onReame = () => {
         const todo = this.props.todo;
         todo.isEditing = true;
         this.props.writeLocal();
-    }
-}
+    };
 
+    /**
+     * antd Popconfirm confirm cancel 事件
+     */
+    confirm = (idx) => {
+        this.props.deleteTodo(idx);
+        Message.success('已删除');
+    };
+
+    cancel = () => {
+        Message.error('已取消');
+    };
+}
 
 export default TodoView
